@@ -64,6 +64,8 @@ Vagrant.configure("2") do |config|
       nd.vm.synced_folder "./#{NODES[i]}", "#{SYNCEDTHISVM}", :create => true # create HOST dir (if reqd)
       nd.vm.provision "shell", path: "set_hostname_ip.sh", args: ["#{NODES[i]}"]
       nd.vm.provision "shell", path: "import_ssh_directory.sh", args: ["#{SYNCEDALLVMS}/.ssh", "#{SSH_USER}"]
+      nd.vm.provision "shell", path: "import_host_keys.sh", args: ["#{SYNCEDALLVMS}/host_keys/#{NODES[i]}"]
+
     end
   end
 
