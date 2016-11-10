@@ -4,7 +4,7 @@
 # As per book "Puppet 3" by John Arundel (p22-25)
 
 echo "**********************************************************************"
-echo "04_set_hostname_and_IP"
+echo "set_hostname_ip"
 
 echo "Setting VM hostname"
 hname=$1

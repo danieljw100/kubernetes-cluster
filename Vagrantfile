@@ -1,43 +1,79 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-Vagrant.configure("2") do |config|
+Vagrant.configure("2") do |config|                       
 
-  # VM SYNCED DIRECTORIES
-  SYNCEDALLVMS = "/vagrant/synced/allvms"
-  SYNCEDTHISVM = "/vagrant/synced/thisvm"
 
+  # *****************
+  # USER CONFIGURABLE
+  # *****************
+
+  MASTER = "master" # specifiy the hostname of the master
+  MASTER_IP = "172.28.128.6" # specify the fixed IP address of the master
+  #NB: in this project the nodes IPs are made up of the master ip concatenated with the node index (1,2,...)
+  NODES = ['node01', 'node02'] # specify the hostnames of the nodes
+  SYNCEDALLVMS = "/vagrant/synced/allvms" # vm location of the synced folder shared by all vms
+  SYNCEDTHISVM = "/vagrant/synced/thisvm" # vm location of the machine specific sycned folder
+  SSH_USER = "xmen" # define the user that will be authorised to ssh between all vms
+        
+
+  # *******
   # ALL VMs
+  # *******
+                       
   config.vm.box = "ubuntu/trusty64"
   config.vm.synced_folder '.', '/vagrant', disabled: true
-  config.vm.synced_folder "./all", "#{SYNCEDALLVMS}", :create => true       #create HOST dir (if reqd)
-  config.vm.provision "shell", path: "01_synced_folders.sh", args: ["#{SYNCEDALLVMS}", "#{SYNCEDTHISVM}"]
-  config.vm.provision "shell", path: "02_add_git_user.sh", args: ["git", "/home/git"]
+  config.vm.synced_folder "./all", "#{SYNCEDALLVMS}", :create => true       # create HOST dir (if reqd)
+  config.vm.provision "shell", path: "synced_folders.sh", args: ["#{SYNCEDALLVMS}", "#{SYNCEDTHISVM}"]
+  config.vm.provision "shell", path: "create_ssh_user.sh", args: ["#{SSH_USER}", "/home/#{SSH_USER}"]
 
+
+  # **************
   # MASTER VM ONLY
-  MASTER = "master"
-  MASTER_IP = "172.28.128.6"
+  # **************
+
   config.vm.define "#{MASTER}" do |ma|
     ma.vm.provider "virtualbox" do |vb|
       vb.name = "#{MASTER}"
     end
     ma.vm.network "private_network", ip: "#{MASTER_IP}"
-    ma.vm.synced_folder "./master", "#{SYNCEDTHISVM}", :create => true      #create HOST dir (if reqd)
-    ma.vm.provision "shell", path: "04_set_hostname_and_IP.sh", args: ["#{MASTER}"]
-    ma.vm.provision "shell", path: "07_generate_user_keys.sh"
+    ma.vm.synced_folder "./master", "#{SYNCEDTHISVM}", :create => true      # create HOST dir (if reqd)
+    ma.vm.provision "shell", path: "set_hostname_ip.sh", args: ["#{MASTER}"]
+    #Convert NODES (ruby array) into nodesbash (bash array) so it can be passed to the shell provisioner
+    nodesbash = " "
+    NODES.each do |iNODE|
+      nodesbash << "#{iNODE} "
+    end
+    ma.vm.provision "shell", path: "make_user_keys.sh", args: ["#{SSH_USER}", "#{SYNCEDALLVMS}"]
+    ma.vm.provision "shell", path: "make_host_keys.sh", args: ["#{SYNCEDALLVMS}", "#{MASTER}", "#{MASTER_IP}", "#{nodesbash}"]
   end
 
+
+  # *************
   # NODE VMs ONLY
-  (1..2).each do |i|
-    config.vm.define "node0#{i}" do |nd|
+  # *************
+
+  (0..NODES.length-1).each do |i|
+    config.vm.define "#{NODES[i]}" do |nd|
       nd.vm.provider "virtualbox" do |vb|
-        vb.name = "node0#{i}"
+        vb.name = "#{NODES[i]}"
       end  
-      nd.vm.network "private_network", type: "dhcp"
-      nd.vm.synced_folder "./node0#{i}", "#{SYNCEDTHISVM}", :create => true #create HOST dir (if reqd)
-      nd.vm.provision "shell", path: "04_set_hostname_and_IP.sh", args: ["node0#{i}"]
-      nd.vm.provision "shell", path: "08_identify_node.sh", args: ["#{MASTER_IP}"]
+      nd.vm.network "private_network", ip: "#{MASTER_IP}#{i+1}"
+      #nd.vm.network "private_network", type: "dhcp"
+      nd.vm.synced_folder "./#{NODES[i]}", "#{SYNCEDTHISVM}", :create => true # create HOST dir (if reqd)
+      nd.vm.provision "shell", path: "set_hostname_ip.sh", args: ["#{NODES[i]}"]
+      nd.vm.provision "shell", path: "import_ssh_directory.sh", args: ["#{SYNCEDALLVMS}/.ssh", "#{SSH_USER}"]
     end
   end
+
+
+  # **************************************
+  # ALL VMs (post machine-specific set-up)
+  # **************************************
+
+  # config.vm.provider "virtualbox" do |box, override|
+  #   override.vm.provision "shell", path: "final_setup.sh"
+  # end
+
 
 end
