@@ -15,6 +15,7 @@ Vagrant.configure("2") do |config|
   SYNCEDALLVMS = "/vagrant/synced/allvms" # vm location of the synced folder shared by all vms
   SYNCEDTHISVM = "/vagrant/synced/thisvm" # vm location of the machine specific sycned folder
   SSH_USER = "xmen" # define the user that will be authorised to ssh between all vms
+  PUPPET_DIR = "#{SYNCEDTHISVM}/puppet" #puppet directory location on each machine
         
 
   # *******
@@ -26,6 +27,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "./all", "#{SYNCEDALLVMS}", :create => true       # create HOST dir (if reqd)
   config.vm.provision "shell", path: "synced_folders.sh", args: ["#{SYNCEDALLVMS}", "#{SYNCEDTHISVM}"]
   config.vm.provision "shell", path: "create_ssh_user.sh", args: ["#{SSH_USER}", "/home/#{SSH_USER}"]
+  config.vm.provision "shell", path: "install_git.sh"
 
 
   # **************
@@ -47,6 +49,7 @@ Vagrant.configure("2") do |config|
     ma.vm.provision "shell", path: "make_user_keys.sh", args: ["#{SSH_USER}", "#{SYNCEDALLVMS}"]
     ma.vm.provision "shell", path: "make_host_keys.sh", args: ["#{SYNCEDALLVMS}", "#{MASTER}", "#{MASTER_IP}", "#{nodesbash}"]
     ma.vm.provision "shell", path: "import_ssh_directory.sh", args: ["#{SYNCEDALLVMS}/.ssh", "#{SSH_USER}"]
+    ma.vm.provision "shell", path: "install_puppet.sh", args: ["#{PUPPET_DIR}"]
   end
 
 
@@ -65,7 +68,7 @@ Vagrant.configure("2") do |config|
       nd.vm.provision "shell", path: "set_hostname_ip.sh", args: ["#{NODES[i]}"]
       nd.vm.provision "shell", path: "import_ssh_directory.sh", args: ["#{SYNCEDALLVMS}/.ssh", "#{SSH_USER}"]
       nd.vm.provision "shell", path: "import_host_keys.sh", args: ["#{SYNCEDALLVMS}/host_keys/#{NODES[i]}"]
-
+      nd.vm.provision "shell", path: "install_puppet.sh", args: ["#{PUPPET_DIR}"]
     end
   end
 
