@@ -1,18 +1,13 @@
 ABOUT THIS PROJECT:
 ===================
 
-This vagrant project provisions an environment that contains the following vms:
- - 1 x master
- - N x nodes
+This projects extends the basic cluster v1.0 tag (which creates a master node cluster with an common ssh authenticated user on each machine).
 
-It creates a common ssh_user (of chosen username) on all vms and configures all of the vms with the same shared ssh configuration including known_hosts, authorized users, ssh_user private and public keys.
+Specifically it adds puppet set-up to all machines that is it
+ - installs git and puppet on all machnes
+ - establishes a common puppet directory location into which manifests will be git cloned 
+ - creates a short-hand papply command to allow the puppet apply commnd to be run from anywhere without the user having to specify the other parameters
 
-This allows all vm to ssh to all other vms as the ssh_user.
-
-BEFORE YOU RUN THIS PROJECT:
-============================
-
-The first few lines of the Vagrantfile contain variables that you should configure - according to how you want the environment set-up (eg names and numbers of nodes etc...)
-
-To prevent any start-up issues remove any vestigial directories from the vagrant project directory - incuding directories: all, master, node01, etc and .vagrant
+This results in a cluster that can be further extended via deployments using puppet manifests that are distrubuted from master to nodes via git.
+(NB: Using git, this way,to distribute puppet manifests is the alterative to using the puppets native puppetmaster)
 

@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
   SYNCEDALLVMS = "/vagrant/synced/allvms" # vm location of the synced folder shared by all vms
   SYNCEDTHISVM = "/vagrant/synced/thisvm" # vm location of the machine specific sycned folder
   SSH_USER = "xmen" # define the user that will be authorised to ssh between all vms
-  PUPPET_DIR = "#{SYNCEDTHISVM}/puppet" #puppet directory location on each machine
+  PUPPET_DIR = "#{SYNCEDTHISVM}/puppet" # puppet directory location on each machine
         
 
   # *******
