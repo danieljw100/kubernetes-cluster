@@ -16,8 +16,8 @@ Vagrant.configure("2") do |config|
   SYNCEDTHISVM = "/vagrant/synced/thisvm" # vm location of the machine specific sycned folder
   SSH_USER = "xmen" # define the user that will be authorised to ssh between all vms
   PUPPET_DIR = "#{SYNCEDTHISVM}/puppet" # puppet directory location on each machine
-  PROV_CLUSTER = "provision/cluster"
-  PROV_PUPPET = "provision/puppet"
+  PROVISION_CORE = "provision/core" # directory location for provision scripts for core of cluster
+  PROVISION_PUPP = "provision/puppet" # directory location for provision scripts for puppet
         
 
   # *******
@@ -27,9 +27,9 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/trusty64"
   config.vm.synced_folder '.', '/vagrant', disabled: true
   config.vm.synced_folder "./all", "#{SYNCEDALLVMS}", :create => true       # create HOST dir (if reqd)
-  config.vm.provision "shell", path: "#{PROV_CLUSTER}/synced_folders.sh", args: ["#{SYNCEDALLVMS}", "#{SYNCEDTHISVM}"]
-  config.vm.provision "shell", path: "#{PROV_CLUSTER}/cluster/create_ssh_user.sh", args: ["#{SSH_USER}", "/home/#{SSH_USER}"]
-  config.vm.provision "shell", path: "#{PROV_PUPPET}/install_git.sh"
+  config.vm.provision "shell", path: "#{PROVISION_CORE}/synced_folders.sh", args: ["#{SYNCEDALLVMS}", "#{SYNCEDTHISVM}"]
+  config.vm.provision "shell", path: "#{PROVISION_CORE}/create_ssh_user.sh", args: ["#{SSH_USER}", "/home/#{SSH_USER}"]
+  config.vm.provision "shell", path: "#{PROVISION_PUPP}/install_git.sh"
 
 
   # **************
@@ -42,16 +42,16 @@ Vagrant.configure("2") do |config|
     end
     ma.vm.network "private_network", ip: "#{MASTER_IP}"
     ma.vm.synced_folder "./master", "#{SYNCEDTHISVM}", :create => true      # create HOST dir (if reqd)
-    ma.vm.provision "shell", path: "#{PROV_CLUSTER}/set_hostname_ip.sh", args: ["#{MASTER}"]
+    ma.vm.provision "shell", path: "#{PROVISION_CORE}/set_hostname_ip.sh", args: ["#{MASTER}"]
     #Convert NODES (ruby array) into nodesbash (bash array) so it can be passed to the shell provisioner
     nodesbash = " "
     NODES.each do |iNODE|
       nodesbash << "#{iNODE} "
     end
-    ma.vm.provision "shell", path: "#{PROV_CLUSTER}/make_user_keys.sh", args: ["#{SSH_USER}", "#{SYNCEDALLVMS}"]
-    ma.vm.provision "shell", path: "#{PROV_CLUSTER}/make_host_keys.sh", args: ["#{SYNCEDALLVMS}", "#{MASTER}", "#{MASTER_IP}", "#{nodesbash}"]
-    ma.vm.provision "shell", path: "#{PROV_CLUSTER}/import_ssh_directory.sh", args: ["#{SYNCEDALLVMS}/.ssh", "#{SSH_USER}"]
-    ma.vm.provision "shell", path: "#{PROV_PUPPET}/install_puppet.sh", args: ["#{PUPPET_DIR}"]
+    ma.vm.provision "shell", path: "#{PROVISION_CORE}/make_user_keys.sh", args: ["#{SSH_USER}", "#{SYNCEDALLVMS}"]
+    ma.vm.provision "shell", path: "#{PROVISION_CORE}/make_host_keys.sh", args: ["#{SYNCEDALLVMS}", "#{MASTER}", "#{MASTER_IP}", "#{nodesbash}"]
+    ma.vm.provision "shell", path: "#{PROVISION_CORE}/import_ssh_directory.sh", args: ["#{SYNCEDALLVMS}/.ssh", "#{SSH_USER}"]
+    ma.vm.provision "shell", path: "#{PROVISION_PUPP}/install_puppet.sh", args: ["#{PUPPET_DIR}"]
   end
 
 
