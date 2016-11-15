@@ -67,10 +67,10 @@ Vagrant.configure("2") do |config|
       nd.vm.network "private_network", ip: "#{MASTER_IP}#{i+1}"
       #nd.vm.network "private_network", type: "dhcp"
       nd.vm.synced_folder "./#{NODES[i]}", "#{SYNCEDTHISVM}", :create => true # create HOST dir (if reqd)
-      nd.vm.provision "shell", path: "provision/cluster/set_hostname_ip.sh", args: ["#{NODES[i]}"]
-      nd.vm.provision "shell", path: "provision/cluster/import_ssh_directory.sh", args: ["#{SYNCEDALLVMS}/.ssh", "#{SSH_USER}"]
-      nd.vm.provision "shell", path: "provision/cluster/import_host_keys.sh", args: ["#{SYNCEDALLVMS}/host_keys/#{NODES[i]}"]
-      nd.vm.provision "shell", path: "provision/puppet/install_puppet.sh", args: ["#{PUPPET_DIR}"]
+      nd.vm.provision "shell", path: "#{PROVISION_CORE}/set_hostname_ip.sh", args: ["#{NODES[i]}"]
+      nd.vm.provision "shell", path: "#{PROVISION_CORE}/import_ssh_directory.sh", args: ["#{SYNCEDALLVMS}/.ssh", "#{SSH_USER}"]
+      nd.vm.provision "shell", path: "#{PROVISION_CORE}/import_host_keys.sh", args: ["#{SYNCEDALLVMS}/host_keys/#{NODES[i]}"]
+      nd.vm.provision "shell", path: "#{PROVISION_PUPP}/install_puppet.sh", args: ["#{PUPPET_DIR}"]
     end
   end
 
