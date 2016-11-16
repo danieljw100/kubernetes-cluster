@@ -18,7 +18,8 @@ Vagrant.configure("2") do |config|
   PUPPET_DIR = "#{SYNCEDTHISVM}/puppet" # puppet directory location on each machine
   PROVISION_CORE = "provision/core" # directory location for provision scripts for core of cluster
   PROVISION_PUPP = "provision/puppet" # directory location for provision scripts for puppet
-        
+  PROVISION_DOCK = "provision/docker" # directory location for provision scripts for docker (N/A if deployed by puppet)     
+
 
   # *******
   # ALL VMs
@@ -52,6 +53,7 @@ Vagrant.configure("2") do |config|
     ma.vm.provision "shell", path: "#{PROVISION_CORE}/make_host_keys.sh", args: ["#{SYNCEDALLVMS}", "#{MASTER}", "#{MASTER_IP}", "#{nodesbash}"]
     ma.vm.provision "shell", path: "#{PROVISION_CORE}/import_ssh_directory.sh", args: ["#{SYNCEDALLVMS}/.ssh", "#{SSH_USER}"]
     ma.vm.provision "shell", path: "#{PROVISION_PUPP}/install_puppet.sh", args: ["#{PUPPET_DIR}"]
+    #ma.vm.provision "shell", path: "#{PROVISION_DOCK}/install_docker.sh"] # NB: comment out if docker is deployed, instead, by puppet
   end
 
 
@@ -71,6 +73,7 @@ Vagrant.configure("2") do |config|
       nd.vm.provision "shell", path: "#{PROVISION_CORE}/import_ssh_directory.sh", args: ["#{SYNCEDALLVMS}/.ssh", "#{SSH_USER}"]
       nd.vm.provision "shell", path: "#{PROVISION_CORE}/import_host_keys.sh", args: ["#{SYNCEDALLVMS}/host_keys/#{NODES[i]}"]
       nd.vm.provision "shell", path: "#{PROVISION_PUPP}/install_puppet.sh", args: ["#{PUPPET_DIR}"]
+      #nd.vm.provision "shell", path: "#{PROVISION_DOCK}/install_docker.sh"] # NB: comment out if docker is deployed, instead, by puppet
     end
   end
 
