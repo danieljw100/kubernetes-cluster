@@ -18,7 +18,9 @@ Vagrant.configure("2") do |config|
   PUPPET_DIR = "#{SYNCEDTHISVM}/puppet" # puppet directory location on each machine
   PROVISION_CORE = "provision/core" # directory location for provision scripts for core of cluster
   PROVISION_PUPP = "provision/puppet" # directory location for provision scripts for puppet
-  PROVISION_DOCK = "provision/docker" # directory location for provision scripts for docker (N/A if deployed by puppet)     
+  PROVISION_DOCK = "provision/docker" # directory location for provision scripts for docker (N/A if deployed by puppet)  
+  GIT_USER = "Daniel Wilkie"
+  GIT_EMAIL = "dan@danielwilkie.com"
 
 
   # *******
@@ -30,7 +32,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "./all", "#{SYNCEDALLVMS}", :create => true       # create HOST dir (if reqd)
   config.vm.provision "shell", path: "#{PROVISION_CORE}/synced_folders.sh", args: ["#{SYNCEDALLVMS}", "#{SYNCEDTHISVM}"]
   config.vm.provision "shell", path: "#{PROVISION_CORE}/create_ssh_user.sh", args: ["#{SSH_USER}", "/home/#{SSH_USER}"]
-  config.vm.provision "shell", path: "#{PROVISION_PUPP}/install_git.sh"
+  config.vm.provision "shell", path: "#{PROVISION_PUPP}/install_git.sh", args: ["#{GIT_USER}", "#{GIT_EMAIL}", "#{SYNCEDTHISVM}", "#{MASTER_IP}"]
 
 
   # **************
