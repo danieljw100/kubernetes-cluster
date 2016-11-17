@@ -12,8 +12,8 @@ sudo apt-get -y install git
 echo "GIT version installed: $(git --version)"
 
 echo "Setting global git configuration"
-git config --global user.name "$GIT_USER"
-git config --global user.email "$GIT_EMAIL"
-git config --global push.default matching
+git config --system user.name "$GIT_USER"
+git config --system user.email "$GIT_EMAIL"
+git config --system push.default matching
 
 #TO-DO: Create short-hand command for cloning form the master bare-repo
