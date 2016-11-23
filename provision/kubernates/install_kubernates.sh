@@ -7,21 +7,16 @@ echo "install_kubernates.sh"
 
 SYNCEDTHISVM=$1
 
-echo "Cloning kubernates project from GitHub"
-mkdir -p $SYNCEDTHISVM/kubernates
-git clone --depth 1 https://github.com/kubernetes/kubernetes.git $SYNCEDTHISVM/kubernates
+# DOWNLOAD KUBERNATES BINARIES
+wget -O $SYNCEDTHISVM "https://github.com/kubernetes/kubernetes/releases/download/v1.4.6/kubernetes.tar.gz"
+tar -xf $SYNCEDTHISVM/kubernetes.tar.gz -C $SYNCEDTHISVM
 
-echo "Configuring versions (kube, flannel, etcd)"
-export KUBE_VERSION=1.2.0
-export FLANNEL_VERSION=0.5.0
-export ETCD_VERSION=2.2.0
 
-#echo "starting kube-controller-manager"
-#sudo service kube-controller-manager start
+# KUBECTL SET-UP 
+# KUBECTL will be used subsequently to bootstrap remianing components on both the controller and worker nodes
+# EITHER move kubectl binaries into /usr/local/bin/kubectl (which is already on the system class PATH) and make executable
+sudo cp $SYNCEDTHISVM/kubernetes/platforms/linux/amd64/kubectl /usr/local/bin/kubectl
+sudo chmod +x /usr/local/bin/kubectl
+# OR add existing binary file location directly to PATH
+#export PATH=$SYNCEDTHISVM/kubernetes/platforms/linux/amd64:$PATH
 
-#echo "Bringing up kubernates cluster"
-# need to switch to ssh authorised user
-#cd $SYNCEDTHISVM/kubernates/cluster
-#KUBERNETES_PROVIDER=ubuntu ./kube-up.sh
-#cmd1="sudo su -c 'KUBERNETES_PROVIDER=ubuntu ./kube-up.sh'"
-#eval $cmd1 >/dev/null 2>&1
