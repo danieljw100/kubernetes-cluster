@@ -18,7 +18,8 @@ Vagrant.configure("2") do |config|
   PUPPET_DIR = "#{SYNCEDTHISVM}/puppet" # puppet directory location on each machine
   PROVISION_CORE = "provision/core" # directory location for provision scripts for core of cluster
   PROVISION_PUPP = "provision/puppet" # directory location for provision scripts for puppet
-  PROVISION_DOCK = "provision/docker" # directory location for provision scripts for docker (N/A if deployed by puppet)  
+  PROVISION_DOCK = "provision/docker" # directory location for provision scripts for docker (N/A if deployed by puppet)
+  PROVISION_KUBE = "provision/kubernates" # directory location for provision scripts for docker (N/A if deployed by puppet) 
   GIT_USER = "Daniel Wilkie"
   GIT_EMAIL = "dan@danielwilkie.com"
 
@@ -56,6 +57,7 @@ Vagrant.configure("2") do |config|
     ma.vm.provision "shell", path: "#{PROVISION_CORE}/import_ssh_directory.sh", args: ["#{SYNCEDALLVMS}/.ssh", "#{SSH_USER}"]
     ma.vm.provision "shell", path: "#{PROVISION_PUPP}/install_puppet.sh", args: ["#{PUPPET_DIR}"]
     #ma.vm.provision "shell", path: "#{PROVISION_DOCK}/install_docker.sh"] # NB: comment out if docker is deployed, instead, by puppet
+    ma.vm.provision "shell", path: "#{PROVISION_KUBE}/install_kubernates.sh", args: ["#{SYNCEDTHISVM}"]
   end
 
 
