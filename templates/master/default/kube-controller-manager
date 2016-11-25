@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+
+KUBE_CONTROLLER_MANAGER_OPTS="--address=0.0.0.0 --master=127.0.0.1:8080 --machines=node01 --v=0"
