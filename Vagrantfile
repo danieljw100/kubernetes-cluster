@@ -16,10 +16,6 @@ Vagrant.configure("2") do |config|
   SYNCEDTHISVM = "/vagrant/synced/thisvm" # vm location of the machine specific sycned folder
   SSH_USER = "xmen" # define the user that will be authorised to ssh between all vms
   PUPPET_DIR = "#{SYNCEDTHISVM}/puppet" # puppet directory location on each machine
-  PROVISION_CORE = "provision/core" # directory location for provision scripts for core of cluster
-  PROVISION_PUPP = "provision/puppet" # directory location for provision scripts for puppet
-  PROVISION_DOCK = "provision/docker" # directory location for provision scripts for docker (N/A if deployed by puppet)
-  PROVISION_KUBE = "provision/kubernates" # directory location for provision scripts for docker (N/A if deployed by puppet) 
   GIT_USER = "Daniel Wilkie"
   GIT_EMAIL = "dan@danielwilkie.com"
 
@@ -31,9 +27,10 @@ Vagrant.configure("2") do |config|
   config.vm.box = "ubuntu/trusty64"
   config.vm.synced_folder '.', '/vagrant', disabled: true
   config.vm.synced_folder "./all", "#{SYNCEDALLVMS}", :create => true       # create HOST dir (if reqd)
-  config.vm.provision "shell", path: "#{PROVISION_CORE}/synced_folders.sh", args: ["#{SYNCEDALLVMS}", "#{SYNCEDTHISVM}"]
-  config.vm.provision "shell", path: "#{PROVISION_CORE}/create_ssh_user.sh", args: ["#{SSH_USER}", "/home/#{SSH_USER}"]
-  config.vm.provision "shell", path: "#{PROVISION_PUPP}/install_git.sh", args: ["#{GIT_USER}", "#{GIT_EMAIL}", "#{SYNCEDTHISVM}", "#{MASTER_IP}"]
+  config.vm.provision "shell", path: "synced_folders.sh", args: ["#{SYNCEDALLVMS}", "#{SYNCEDTHISVM}"]
+  config.vm.provision "shell", path: "set_hosts.sh" # NB: this needs refactoring - currently uses hard-coded hostnames and IPs
+  config.vm.provision "shell", path: "create_ssh_user.sh", args: ["#{SSH_USER}", "/home/#{SSH_USER}"]
+  config.vm.provision "shell", path: "install_git.sh", args: ["#{GIT_USER}", "#{GIT_EMAIL}", "#{SYNCEDTHISVM}", "#{MASTER_IP}"]
 
 
   # **************
@@ -46,18 +43,20 @@ Vagrant.configure("2") do |config|
     end
     ma.vm.network "private_network", ip: "#{MASTER_IP}"
     ma.vm.synced_folder "./master", "#{SYNCEDTHISVM}", :create => true      # create HOST dir (if reqd)
-    ma.vm.provision "shell", path: "#{PROVISION_CORE}/set_hostname_ip.sh", args: ["#{MASTER}"]
+    ma.vm.provision "shell", path: "set_hostname.sh", args: ["#{MASTER}"]
     #Convert NODES (ruby array) into nodesbash (bash array) so it can be passed to the shell provisioner
     nodesbash = " "
     NODES.each do |iNODE|
       nodesbash << "#{iNODE} "
     end
-    ma.vm.provision "shell", path: "#{PROVISION_CORE}/make_user_keys.sh", args: ["#{SSH_USER}", "#{SYNCEDALLVMS}"]
-    ma.vm.provision "shell", path: "#{PROVISION_CORE}/make_host_keys.sh", args: ["#{SYNCEDALLVMS}", "#{MASTER}", "#{MASTER_IP}", "#{nodesbash}"]
-    ma.vm.provision "shell", path: "#{PROVISION_CORE}/import_ssh_directory.sh", args: ["#{SYNCEDALLVMS}/.ssh", "#{SSH_USER}"]
-    ma.vm.provision "shell", path: "#{PROVISION_PUPP}/install_puppet.sh", args: ["#{PUPPET_DIR}"]
-    #ma.vm.provision "shell", path: "#{PROVISION_DOCK}/install_docker.sh"] # NB: comment out if docker is deployed, instead, by puppet
-    ma.vm.provision "shell", path: "#{PROVISION_KUBE}/install_kubernates.sh", args: ["#{SYNCEDTHISVM}"]
+    ma.vm.provision "shell", path: "make_user_keys.sh", args: ["#{SSH_USER}", "#{SYNCEDALLVMS}"]
+    ma.vm.provision "shell", path: "make_host_keys.sh", args: ["#{SYNCEDALLVMS}", "#{MASTER}", "#{MASTER_IP}", "#{nodesbash}"]
+    ma.vm.provision "shell", path: "import_ssh_directory.sh", args: ["#{SYNCEDALLVMS}/.ssh", "#{SSH_USER}"]
+    ma.vm.provision "shell", path: "install_puppet.sh", args: ["#{PUPPET_DIR}"]
+    # ma.vm.provision "shell", path: "install_docker.sh" # NB: comment out if docker is deployed, instead, by puppet
+    ma.vm.provision "shell", path: "get_etcd_binaries.sh", args: ["#{SYNCEDALLVMS}"]
+    ma.vm.provision "shell", path: "get_kubernetes_binaries.sh", args: ["#{SYNCEDALLVMS}"]
+    ma.vm.provision "shell", path: "kubernetes_master_setup.sh", args: ["#{SYNCEDALLVMS}"]
   end
 
 
@@ -73,11 +72,12 @@ Vagrant.configure("2") do |config|
       nd.vm.network "private_network", ip: "#{MASTER_IP}#{i+1}"
       #nd.vm.network "private_network", type: "dhcp"
       nd.vm.synced_folder "./#{NODES[i]}", "#{SYNCEDTHISVM}", :create => true # create HOST dir (if reqd)
-      nd.vm.provision "shell", path: "#{PROVISION_CORE}/set_hostname_ip.sh", args: ["#{NODES[i]}"]
-      nd.vm.provision "shell", path: "#{PROVISION_CORE}/import_ssh_directory.sh", args: ["#{SYNCEDALLVMS}/.ssh", "#{SSH_USER}"]
-      nd.vm.provision "shell", path: "#{PROVISION_CORE}/import_host_keys.sh", args: ["#{SYNCEDALLVMS}/host_keys/#{NODES[i]}"]
-      nd.vm.provision "shell", path: "#{PROVISION_PUPP}/install_puppet.sh", args: ["#{PUPPET_DIR}"]
-      #nd.vm.provision "shell", path: "#{PROVISION_DOCK}/install_docker.sh"] # NB: comment out if docker is deployed, instead, by puppet
+      nd.vm.provision "shell", path: "set_hostname.sh", args: ["#{NODES[i]}"]
+      nd.vm.provision "shell", path: "import_ssh_directory.sh", args: ["#{SYNCEDALLVMS}/.ssh", "#{SSH_USER}"]
+      nd.vm.provision "shell", path: "import_host_keys.sh", args: ["#{SYNCEDALLVMS}/host_keys/#{NODES[i]}"]
+      nd.vm.provision "shell", path: "install_puppet.sh", args: ["#{PUPPET_DIR}"]
+      # nd.vm.provision "shell", path: "install_docker.sh"] # NB: comment out if docker is deployed, instead, by puppet
+      nd.vm.provision "shell", path: "kubernetes_node_setup.sh", args: ["#{SYNCEDALLVMS}"]
     end
   end
 

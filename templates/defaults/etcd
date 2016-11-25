@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+
+ETCD_OPTS="-listen-client-urls=http://master:4001"
