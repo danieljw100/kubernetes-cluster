@@ -1,3 +1,4 @@
 #!/bin/sh
 
-ETCD_OPTS="-listen-client-urls=http://master:4001"
+ETCD_OPTS="\
+-listen-client-urls=http://master:4001"

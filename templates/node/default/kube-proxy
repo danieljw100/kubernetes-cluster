@@ -1,3 +1,8 @@
 #!/bin/sh
 
-KUBE_PROXY_OPTS="--etcd_servers=http://kube-master:4001 --v=0"
+KUBE_PROXY_OPTS="\
+--master=http://master:4001"
+
+
+# --etcd_servers=http://master:4001 # '--etcd_servers' is an invlaid flag
+# --v=0" # '--v' is an invlaid flag
