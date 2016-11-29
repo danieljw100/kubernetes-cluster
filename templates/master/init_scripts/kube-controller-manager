@@ -23,10 +23,7 @@ KUBE_CONTROLLER_MANAGER=/opt/bin/$BASE
 # This is the pid file managed by kube-controller-manager itself
 KUBE_CONTROLLER_MANAGER_PIDFILE=/var/run/$BASE.pid
 KUBE_CONTROLLER_MANAGER_LOGFILE=/var/log/$BASE.log
-KUBE_CONTROLLER_MANAGER_OPTS="--address=0.0.0.0 \
---master=127.0.0.1:8080 \
---machines=node01 \
---v=0"
+KUBE_CONTROLLER_MANAGER_OPTS=""
 KUBE_CONTROLLER_MANAGER_DESC="Kube-Controller-Manager"
 
 # Get lsb functions

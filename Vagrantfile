@@ -54,8 +54,8 @@ Vagrant.configure("2") do |config|
     ma.vm.provision "shell", path: "import_ssh_directory.sh", args: ["#{SYNCEDALLVMS}/.ssh", "#{SSH_USER}"]
     ma.vm.provision "shell", path: "install_puppet.sh", args: ["#{PUPPET_DIR}"]
     # ma.vm.provision "shell", path: "install_docker.sh" # NB: comment out if docker is deployed, instead, by puppet
-    ma.vm.provision "shell", path: "get_etcd_binaries.sh", args: ["#{SYNCEDALLVMS}"]
-    ma.vm.provision "shell", path: "get_kubernetes_binaries.sh", args: ["#{SYNCEDALLVMS}"]
+    ma.vm.provision "shell", path: "get_etcd_installation_files.sh", args: ["#{SYNCEDALLVMS}"]
+    ma.vm.provision "shell", path: "get_kubernetes_installation_files.sh", args: ["#{SYNCEDALLVMS}"]
     ma.vm.provision "shell", path: "kubernetes_master_setup.sh", args: ["#{SYNCEDALLVMS}"]
   end
 

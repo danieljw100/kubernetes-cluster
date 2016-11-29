@@ -3,7 +3,7 @@
 # Kubernates installation follows: http://kubernetes.io/docs/getting-started-guides/ubuntu/
 
 echo "********************************************************"
-echo "get_kubernetes_binaries.sh"
+echo "get_kubernetes_installation_files.sh"
 
 SYNCEDALLVMS=$1
 

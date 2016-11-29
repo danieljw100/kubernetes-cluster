@@ -23,7 +23,7 @@ ETCD=/opt/bin/$BASE
 # This is the pid file managed by etcd itself
 ETCD_PIDFILE=/var/run/$BASE.pid
 ETCD_LOGFILE=/var/log/$BASE.log
-ETCD_OPTS="-listen-client-urls=http://master:4001"
+ETCD_OPTS=""
 ETCD_DESC="Etcd"
 
 # Get lsb functions

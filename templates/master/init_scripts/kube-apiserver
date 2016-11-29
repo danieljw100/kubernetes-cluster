@@ -23,13 +23,7 @@ KUBE_APISERVER=/opt/bin/$BASE
 # This is the pid file managed by kube-apiserver itself
 KUBE_APISERVER_PIDFILE=/var/run/$BASE.pid
 KUBE_APISERVER_LOGFILE=/var/log/$BASE.log
-KUBE_APISERVER_OPTS="--address=0.0.0.0 \
---port=8080 \
---etcd_servers=http://master:4001 \
---portal_net=11.1.1.0/24 \
---allow_privileged=false \
---kubelet_port=10250 \
---v=0"
+KUBE_APISERVER_OPTS=""
 KUBE_APISERVER_DESC="Kube-Apiserver"
 
 # Get lsb functions

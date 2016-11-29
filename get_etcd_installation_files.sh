@@ -3,7 +3,7 @@
 # Kubernates installation follows: http://kubernetes.io/docs/getting-started-guides/ubuntu/
 
 echo "********************************************************"
-echo "get_etcd_binaries.sh"
+echo "get_etcd_installation_files.sh"
 
 SYNCEDALLVMS=$1
 

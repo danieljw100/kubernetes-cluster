@@ -1,4 +1,3 @@
 #!/bin/sh
-set -e
 
 KUBE_APISERVER_OPTS="--address=0.0.0.0 --port=8080 --etcd_servers=http://master:4001 --portal_net=11.1.1.0/24 --allow_privileged=false --kubelet_port=10250 --v=0"

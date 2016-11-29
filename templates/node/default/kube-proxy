@@ -1,4 +1,3 @@
 #!/bin/sh
-set -e
 
 KUBE_PROXY_OPTS="--etcd_servers=http://kube-master:4001 --v=0"

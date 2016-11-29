@@ -23,9 +23,7 @@ KUBE_SCHEDULER=/opt/bin/$BASE
 # This is the pid file managed by kube-scheduler itself
 KUBE_SCHEDULER_PIDFILE=/var/run/$BASE.pid
 KUBE_SCHEDULER_LOGFILE=/var/log/$BASE.log
-KUBE_SCHEDULER_OPTS="--address=0.0.0.0 \
---master=127.0.0.1:8080 \
---v=0"
+KUBE_SCHEDULER_OPTS=""
 KUBE_SCHEDULER_DESC="Kube-Scheduler"
 
 # Get lsb functions
