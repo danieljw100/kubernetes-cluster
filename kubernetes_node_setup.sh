@@ -38,3 +38,11 @@ echo "Kubernetes: copying pre-created .sh defaults (from Vagrant project directo
 mkdir -p /etc/default
 cp $SYNCEDALLVMS/templates/node/default/kubelet /etc/default
 cp $SYNCEDALLVMS/templates/node/default/kube-proxy /etc/default
+
+# echo "Kubernetes: Starting node components..."
+# echo "Kubernetes: checking component status BEFORE starting docker"
+# initctl list | grep -E '(docker|kube)'
+# echo "Kubernetes: re-starting docker"
+# sudo service docker restart
+# echo "Kubernetes: checking component status AFTER starting docker"
+# initctl list | grep -E '(docker|kube)'

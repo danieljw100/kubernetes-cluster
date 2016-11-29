@@ -44,3 +44,11 @@ cp $SYNCEDALLVMS/templates/master/default/etcd /etc/default
 cp $SYNCEDALLVMS/templates/master/default/kube-apiserver /etc/default
 cp $SYNCEDALLVMS/templates/master/default/kube-controller-manager /etc/default
 cp $SYNCEDALLVMS/templates/master/default/kube-scheduler /etc/default
+
+# echo "Kubernetes: Starting master components..."
+# echo "Kubernetes: checking component status BEFORE starting ETCD"
+# initctl list | grep -E '(kube|etc)'
+# echo "Kubernetes: starting ETCD"
+# sudo service etcd start
+# echo "Kubernetes: checking component status AFTER starting ETCD"
+# initctl list | grep -E '(kube|etc)'
