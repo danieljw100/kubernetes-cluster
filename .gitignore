@@ -1,4 +1,8 @@
 /.vagrant/
-/all/*
 /master/*
 /node??/*
+#ignore everything under /all except for the template directory (and its contents)
+/all/*
+!/all/templates/*
+!/all/templates/*/*
+!/all/templates/*/*/*
