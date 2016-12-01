@@ -1,4 +1,5 @@
 /.vagrant/
-/all/
+all/*
+!all/templates/
 /master/
 /node??/
