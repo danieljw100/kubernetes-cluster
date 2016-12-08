@@ -55,6 +55,17 @@ echo "Publishing flannel set-up to etcd key: /coreos.com/network/config"
 sudo /opt/bin/etcdctl set /coreos.com/network/config '{"Network":"10.0.0.0/8", "SubnetLen": 20, "SubnetMin": "10.10.0.0", "SubnetMax": "10.99.0.0", "Backend": {"Type": "udp", "Port": 7890}}'
 
 echo "Starting flannel daemon (in background)"
-sudo ./opt/bin/flanneld &
+sudo /opt/bin/flanneld &
+
+snooze=15s
+echo "Sleeping for $snooze (to allow flannel to start-up before checking process an network status)"
+sleep $snooze
+echo "Finished sleeping"
+
+echo "Checking process status of flannel"
+ps aux | grep flanneld
+
+echo "Checking network status of flannel"
+sudo netstat -ap | grep flannel
 
 # TO-DO: re-start docker...
