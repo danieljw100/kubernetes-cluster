@@ -3,6 +3,8 @@
 echo "********************************************************"
 echo "install_docker.sh"
 
+SYNCEDALLVMS=$1
+
 echo "Adding Docker repository to local APT sources list"
 #DOCKER_REPO_URL="deb https://apt.dockerproject.org/repo ubuntu-trusty main" # HTTPS URL
 DOCKER_REPO="deb http://apt.dockerproject.org/repo ubuntu-trusty main" # HTTP URL
@@ -38,6 +40,9 @@ sudo usermod -aG docker xmen
 
 echo "Confirming Docker version"
 sudo docker version
+
+echo "Updating /etc/default/docker with node specific --bip flag settings to allocate IP subnet range containers"
+sudo cp $SYNCEDALLVMS/templates/node/default/docker /etc/default/docker
 
 echo "Confirming Docker upstart status"
 sudo service docker status

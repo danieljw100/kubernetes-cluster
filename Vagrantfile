@@ -56,7 +56,7 @@ Vagrant.configure("2") do |config|
     ma.vm.provision "shell", path: "get_etcd_installation_files.sh", args: ["#{SYNCEDALLVMS}"]
     ma.vm.provision "shell", path: "get_kubernetes_installation_files.sh", args: ["#{SYNCEDALLVMS}"]
     ma.vm.provision "shell", path: "kubernetes_master_setup.sh", args: ["#{SYNCEDALLVMS}"]
-    # ma.vm.provision "shell", path: "install_docker.sh" # NB: comment out if docker is deployed, instead, by puppet
+    # ma.vm.provision "shell", path: "install_docker.sh", args: ["#{SYNCEDALLVMS}"] # NB: comment out if docker is deployed, instead, by puppet
   end
 
 
@@ -70,14 +70,15 @@ Vagrant.configure("2") do |config|
         vb.name = "#{NODES[i]}"
       end  
       nd.vm.network "private_network", ip: "#{MASTER_IP}#{i+1}"
-      #nd.vm.network "private_network", type: "dhcp"
+      # nd.vm.network "private_network", type: "dhcp"
       nd.vm.synced_folder "./#{NODES[i]}", "#{SYNCEDTHISVM}", :create => true # create HOST dir (if reqd)
       nd.vm.provision "shell", path: "set_hostname.sh", args: ["#{NODES[i]}"]
       nd.vm.provision "shell", path: "import_ssh_directory.sh", args: ["#{SYNCEDALLVMS}/.ssh", "#{SSH_USER}"]
       nd.vm.provision "shell", path: "import_host_keys.sh", args: ["#{SYNCEDALLVMS}/host_keys/#{NODES[i]}"]
       nd.vm.provision "shell", path: "install_puppet.sh", args: ["#{PUPPET_DIR}"]
       nd.vm.provision "shell", path: "kubernetes_node_setup.sh", args: ["#{SYNCEDALLVMS}"]
-      nd.vm.provision "shell", path: "install_docker.sh" # NB: comment out if docker is deployed, instead, by puppet
+      nd.vm.provision "shell", path: "install_docker.sh", args: ["#{SYNCEDALLVMS}"] # NB: comment out if docker is deployed, instead, by puppet
+      nd.vm.provision "shell", path: "install_flannel.sh", args: ["#{SYNCEDALLVMS}"]
     end
   end
 

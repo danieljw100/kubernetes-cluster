@@ -7,6 +7,7 @@ echo "kubernetes_master_setup.sh"
 
 SYNCEDALLVMS=$1
 SERVER_BIN=$SYNCEDALLVMS/kubernetes/server/kubernetes/server/bin
+UBUNTU_NOD=$SYNCEDALLVMS/kubernetes/cluster/ubuntu/minion # redundant in this provision script
 UBUNTU_MAS=$SYNCEDALLVMS/kubernetes/cluster/ubuntu/master
 
 OPTBIN="/opt/bin"
