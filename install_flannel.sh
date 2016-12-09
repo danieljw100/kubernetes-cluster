@@ -43,29 +43,29 @@ fi
 echo "Copying flanneld binary to /opt/bin"
 cp $SYNCEDALLVMS/flanneld /opt/bin
 
-echo "Starting etcd"
-sudo service etcd start
+#echo "Starting etcd"
+#sudo service etcd start
 
-snooze=15s
-echo "Sleeping for $snooze (to allow etcd to start-up before publishing flannel config)"
-sleep $snooze
-echo "Finished sleeping"
+#snooze=15s
+#echo "Sleeping for $snooze (to allow etcd to start-up before publishing flannel config)"
+#sleep $snooze
+#echo "Finished sleeping"
 
-echo "Publishing flannel set-up to etcd key: /coreos.com/network/config"
-sudo /opt/bin/etcdctl set /coreos.com/network/config '{"Network":"10.0.0.0/8", "SubnetLen": 20, "SubnetMin": "10.10.0.0", "SubnetMax": "10.99.0.0", "Backend": {"Type": "udp", "Port": 7890}}'
+#echo "Publishing flannel set-up to etcd key: /coreos.com/network/config"
+#sudo /opt/bin/etcdctl set /coreos.com/network/config '{"Network":"10.0.0.0/16", "SubnetLen": 24, "SubnetMin": "10.0.10.0", "SubnetMax": "10.0.90.0", "Backend": {"Type": "udp", "Port": 7890}}'
 
-echo "Starting flannel daemon (in background)"
-sudo /opt/bin/flanneld &
+#echo "Starting flannel daemon (in background)"
+#sudo /opt/bin/flanneld &
 
-snooze=15s
-echo "Sleeping for $snooze (to allow flannel to start-up before checking process an network status)"
-sleep $snooze
-echo "Finished sleeping"
+#snooze=15s
+#echo "Sleeping for $snooze (to allow flannel to start-up before checking process an network status)"
+#sleep $snooze
+#echo "Finished sleeping"
 
-echo "Checking process status of flannel"
-ps aux | grep flanneld
+#echo "Checking process status of flannel"
+#ps aux | grep flanneld
 
-echo "Checking network status of flannel"
-sudo netstat -ap | grep flannel
+#echo "Checking network status of flannel"
+#sudo netstat -ap | grep flannel
 
 # TO-DO: re-start docker...

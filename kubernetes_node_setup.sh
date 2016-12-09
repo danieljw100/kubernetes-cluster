@@ -7,6 +7,8 @@ echo "kubernetes_node_setup.sh"
 #NB: ETCD is a pre-requisite for flannel and is therefore required on each node
 
 SYNCEDALLVMS=$1
+NODENAME=$2
+
 SERVER_BIN=$SYNCEDALLVMS/kubernetes/server/kubernetes/server/bin
 UBUNTU_NOD=$SYNCEDALLVMS/kubernetes/cluster/ubuntu/minion
 UBUNTU_MAS=$SYNCEDALLVMS/kubernetes/cluster/ubuntu/master
@@ -41,6 +43,6 @@ cp $UBUNTU_NOD/init_scripts/kube-proxy /etc/init.d
 ## NB: the default scripts refered to below are not provided - I wrote them (so don't lose them!)
 echo "Kubernetes: copying pre-created .sh defaults (from Vagrant project directory) into /etc/default"
 mkdir -p /etc/default
-cp $SYNCEDALLVMS/templates/node/default/etcd /etc/default
+cp $SYNCEDALLVMS/templates/node/default/etcd_$NODENAME /etc/default && sudo mv /etc/default/etcd_$NODENAME /etc/default/etcd
 cp $SYNCEDALLVMS/templates/node/default/kubelet /etc/default
 cp $SYNCEDALLVMS/templates/node/default/kube-proxy /etc/default

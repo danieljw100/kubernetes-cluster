@@ -4,6 +4,7 @@ echo "********************************************************"
 echo "install_docker.sh"
 
 SYNCEDALLVMS=$1
+NODENAME=$2
 
 echo "Adding Docker repository to local APT sources list"
 #DOCKER_REPO_URL="deb https://apt.dockerproject.org/repo ubuntu-trusty main" # HTTPS URL
@@ -41,11 +42,14 @@ sudo usermod -aG docker xmen
 echo "Confirming Docker version"
 sudo docker version
 
-echo "Updating /etc/default/docker with node specific --bip flag settings to allocate IP subnet range containers"
-sudo cp $SYNCEDALLVMS/templates/node/default/docker /etc/default/docker
-
 echo "Confirming Docker upstart status"
 sudo service docker status
+
+echo "Updating /etc/default/docker with node specific --bip flag settings to allocate IP subnet range containers"
+sudo cp $SYNCEDALLVMS/templates/node/default/docker_$NODENAME /etc/default && sudo mv /etc/default/docker_$NODENAME /etc/default/docker
+
+echo "Re-starting Docker with revised --bip flag settings"
+sudo service docker restart
 
 echo "Testing Docker by running hello-world image"
 sudo docker run hello-world
