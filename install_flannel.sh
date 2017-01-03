@@ -43,6 +43,22 @@ fi
 echo "Copying flanneld binary to /opt/bin"
 cp $SYNCEDALLVMS/flanneld /opt/bin
 
+echo "Flannel: configuring for upstart..."
+echo "Flannel: copying upstart .conf files"
+mkdir -p /etc/init
+cp $SYNCEDALLVMS/templates/node/init_conf/flannel.conf /etc/init
+echo "Flannel: copying upstart default files"
+mkdir -p /etc/default
+cp $SYNCEDALLVMS/templates/node/default/flannel /etc/default
+
+echo "Flannel: checking upstart configuration..."
+sudo service flannel status
+
+echo "Flannel: starting via upstart..."
+sudo service flannel start
+
+# *****************************
+
 #echo "Starting etcd"
 #sudo service etcd start
 
