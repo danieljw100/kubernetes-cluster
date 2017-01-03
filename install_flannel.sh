@@ -28,7 +28,7 @@ then
   echo "Archive already downloaded. Skipping..."
 else
   echo "Archive not already downloaded. Downloading..."
-  curl -L  https://github.com/coreos/flannel/releases/download/v0.6.2/flannel-v0.6.2-linux-amd64.tar.gz -o $SYNCEDALLVMS/flannel.tar.gz >/dev/null 2>&1
+  curl -L  https://github.com/coreos/flannel/releases/download/v0.6.2/flannel-v0.6.2-linux-amd64.tar.gz -o $SYNCEDALLVMS/flannel-v0.6.2-linux-amd64.tar.gz >/dev/null 2>&1
 fi
 
 echo "Checking if binaries are already extracted..."
@@ -37,7 +37,7 @@ then
   echo "Binaries already extracted. Skipping..."
 else
   echo "Binaries not already extracted. Extracting..."
-  tar -xf $SYNCEDALLVMS/flannel.tar.gz -C $SYNCEDALLVMS
+  tar -xf $SYNCEDALLVMS/flannel-v0.6.2-linux-amd64.tar.gz -C $SYNCEDALLVMS
 fi
 
 echo "Copying flanneld binary to /opt/bin"
