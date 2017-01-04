@@ -1,13 +1,8 @@
 ABOUT THIS PROJECT:
 ===================
 
-This projects extends the basic cluster v1.0 tag (which creates a master node cluster with an common ssh authenticated user on each machine).
+This is a vagrant project that can be run on any Windows PC with vagrant and virtualbox installed
 
-Specifically it adds puppet set-up to all machines that is it
- - installs git and puppet on all machnes
- - establishes a common puppet directory location into which manifests will be git cloned 
- - creates a short-hand papply command to allow the puppet apply commnd to be run from anywhere without the user having to specify the other parameters
+Basic usage: navigate to the cloned project directory and run "vagrant up" to run a series of shell scripts to provision all of the components required to create a working kubernates cluster consisting of one virtual master/control-plane and two virtual nodes/minions. All virtual machine will be Linux Ubunty Trust64. The resulting environment can be used to sandbox kubernates and docker capabilities.
 
-This results in a cluster that can be further extended via deployments using puppet manifests that are distrubuted from master to nodes via git.
-(NB: Using git, this way,to distribute puppet manifests is the alterative to using the puppets native puppetmaster)
-
+Advanced usage: the Vagrantfile can be adapted to allow an arbitrary number of nodes (subject to host cpapcity)
