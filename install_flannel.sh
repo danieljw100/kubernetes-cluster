@@ -4,6 +4,7 @@ echo "********************************************************"
 echo "install_flannel.sh"
 
 SYNCEDALLVMS=$1
+NODENAME=$2
 
 # Fix bug with initialisation of GOPATH (see below URL for details)
 # http://stackoverflow.com/questions/21001387/how-do-i-set-the-gopath-environment-variable-on-ubuntu-what-file-must-i-edit
@@ -53,6 +54,14 @@ cp $SYNCEDALLVMS/templates/node/default/flannel /etc/default
 
 echo "Flannel: checking upstart configuration..."
 sudo service flannel status
+
+echo "Docker: updating upstart default file to specify local flannel allocated IP range for local containers (and mtu)"
+sudo cp $SYNCEDALLVMS/templates/node/default/docker_$NODENAME /etc/default && sudo mv /etc/default/docker_$NODENAME /etc/default/docker
+
+# *****************************
+
+# echo "Re-starting Docker with revised --bip flag settings"
+# sudo service docker restart
 
 # echo "Flannel: starting via upstart..."
 # sudo service flannel start

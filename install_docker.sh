@@ -45,14 +45,11 @@ sudo docker version
 echo "Confirming Docker upstart status"
 sudo service docker status
 
-echo "Updating /etc/default/docker with node specific --bip flag settings to allocate IP subnet range containers"
-sudo cp $SYNCEDALLVMS/templates/node/default/docker_$NODENAME /etc/default && sudo mv /etc/default/docker_$NODENAME /etc/default/docker
-
-echo "Re-starting Docker with revised --bip flag settings"
-sudo service docker restart
-
 echo "Testing Docker by running hello-world image"
 sudo docker run hello-world
 
 echo "Kubernetes Health Check of node services"
 initctl list | grep -E '(docker|kube)'
+
+echo "Docker: stopping"
+sudo service docker stop

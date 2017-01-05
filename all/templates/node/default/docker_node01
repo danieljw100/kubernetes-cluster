@@ -13,6 +13,7 @@
 # Use DOCKER_OPTS to modify the daemon startup options.
 #DOCKER_OPTS="--dns 8.8.8.8 --dns 8.8.4.4"
 #DOCKER_OPTS="--bip 10.0.10.1/24"
+#source /run/flannel/subnet.env
 #DOCKER_OPTS="--bip=${FLANNEL_SUBNET} --mtu=${FLANNEL_MTU}"
 
 # If you need Docker to use an HTTP proxy, it can also be specified here.
