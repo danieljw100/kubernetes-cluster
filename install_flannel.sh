@@ -54,8 +54,8 @@ cp $SYNCEDALLVMS/templates/node/default/flannel /etc/default
 echo "Flannel: checking upstart configuration..."
 sudo service flannel status
 
-echo "Flannel: starting via upstart..."
-sudo service flannel start
+# echo "Flannel: starting via upstart..."
+# sudo service flannel start
 
 # *****************************
 
