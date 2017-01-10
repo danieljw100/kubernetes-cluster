@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Docker Upstart and SysVinit configuration file
 
 #
@@ -12,9 +14,24 @@
 
 # Use DOCKER_OPTS to modify the daemon startup options.
 #DOCKER_OPTS="--dns 8.8.8.8 --dns 8.8.4.4"
-#DOCKER_OPTS="--bip 10.0.10.1/24"
-#source /run/flannel/subnet.env
-#DOCKER_OPTS="--bip=${FLANNEL_SUBNET} --mtu=${FLANNEL_MTU}"
+#DOCKER_OPTS="--bip 10.0.20.1/24"
+
+# ****************************************************************************
+
+# NB: you cannot execute a "source" command from within a default upstart file
+# cmd1="sudo su -c 'source /run/flannel/subnet.env'"
+# eval $cmd1 >/dev/null 2>&1
+# eval $cmd1
+source /run/flannel/subnet.env
+# FLANNEL_SUBNET=10.0.44.1/24
+# FLANNEL_MTU=1472
+echo "FLANNEL_SUBNET=${FLANNEL_SUBNET}"
+echo "FLANNEL_MTU=${FLANNEL_MTU}"
+DOCKER_OPTS="--bip=${FLANNEL_SUBNET} --mtu=${FLANNEL_MTU}"
+# DOCKER_OPTS="--bip=10.0.44.1/24 --mtu=1472"
+echo "DOCKER_OPTS=${DOCKER_OPTS}"
+
+# ****************************************************************************
 
 # If you need Docker to use an HTTP proxy, it can also be specified here.
 #export http_proxy="http://127.0.0.1:3128/"

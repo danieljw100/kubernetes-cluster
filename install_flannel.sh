@@ -56,7 +56,8 @@ echo "Flannel: checking upstart configuration..."
 sudo service flannel status
 
 echo "Docker: updating upstart default file to specify local flannel allocated IP range for local containers (and mtu)"
-sudo cp $SYNCEDALLVMS/templates/node/default/docker_$NODENAME /etc/default && sudo mv /etc/default/docker_$NODENAME /etc/default/docker
+# sudo cp $SYNCEDALLVMS/templates/node/default/docker_$NODENAME /etc/default && sudo mv /etc/default/docker_$NODENAME /etc/default/docker
+sudo cp $SYNCEDALLVMS/templates/node/default/docker /etc/default
 
 # *****************************
 

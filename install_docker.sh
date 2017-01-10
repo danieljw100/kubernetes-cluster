@@ -42,6 +42,11 @@ sudo usermod -aG docker xmen
 echo "Confirming Docker version"
 sudo docker version
 
+echo "Over-write upstart /etc/init/docker.conf file with corrected template version"
+# This is necessary in order for the bash 'source' command to be successfully executed from within upstart default script
+# Which is, in turn, necessary for the current local flannel env variables (inc the local subnet range) to be read-in whenever Docker is re-started
+sudo cp $SYNCEDALLVMS/templates/node/init_conf/docker.conf /etc/init
+
 echo "Confirming Docker upstart status"
 sudo service docker status
 

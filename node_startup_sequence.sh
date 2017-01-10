@@ -4,10 +4,7 @@
 # NB - this could be more efficiently managed by setting the upstart dependencies for each job
 
 echo "**********************************************************************"
-echo "node_startup_sequence"
-
-SYNCEDALLVMS=$1
-NODENAME=$2
+echo "node_startup_sequence.sh"
 
 echo "ETCD: starting via upstart"
 sudo service etcd start
@@ -28,13 +25,11 @@ echo "Finished sleeping"
 echo "Flannel: starting via upstart"
 sudo service flannel start
 
-echo "Docker: reading flannel subnet and mtu variables"
-sudo source /run/flannel/subnet.env
+echo "Docker: starting via upstart"
+sudo service docker start
 
-echo "Docker: updating /etc/default/docker with node specific --bip flag settings to correctly allocate IP subnet ranges to containers"
-sudo cp $SYNCEDALLVMS/templates/node/default/docker_$NODENAME /etc/default && sudo mv /etc/default/docker_$NODENAME /etc/default/docker
+echo "Kubelet: re-starting via upstart"
+sudo service kubelet start
 
-echo "Docker: re-starting (with revised default --bip flag settings)"
-sudo service docker restart
-#sudo service docker stop
-#sudo docker daemon --bip=${FLANNEL_SUBNET} --mtu=${FLANNEL_MTU} &
+echo "Node: checking status of all K8 node components"
+initctl list | grep -E '(docker|kube)'
